@@ -77,20 +77,62 @@ int main(int argc, char *argv[])
     bool hasInput               = parser.has("@input");
     bool hasExport              = parser.has("export");
     bool hasDetector            = parser.has("detector");
-    int N = parser.get<int>("N");
-    //Read path for input image 
-    cv::String img_path = parser.get<cv::String>(0);
-    //Convert path to matrix
-    cv::Mat img = cv::imread(img_path);
-    //Initialize output
-    cv::Mat imgout = img;
-    cv::String imgout_path = parser.get<cv::String>("e");
-    int detector_idx = 0; 
+    bool bSuccess = false;
+    cv::VideoCapture cap;
 
-    // TODO: Everything
-    // if(hasInput && hasExport && hasDetector) {
-        detectFrame(img,imgout,detector_idx,N);
-    // }    
+    int N = parser.get<int>("N");
+    //Read full path for input image/video
+    cv::String img_path = parser.get<cv::String>(0);
+    std::filesystem::path pathObj(img_path);
+    std::string file_name = pathObj.stem().string();
+    std::string file_extension = pathObj.extension().string();
+    cv::String detector_type = parser.get<cv::String>("d");
+    cv::String imgout_path = parser.get<cv::String>("e");
+    //Output file name
+    std::string output_file_name = "out/"+file_name+"_"+detector_type+file_extension;
+    //Create output directory
+    std::filesystem::create_directories("./out");
+
+    // Assign detector case index based on input
+    int detector_idx = -1;
+    for(int i = 0; i < 4; i++){
+        if (detector_type == EXPECTED_CASES[i]){
+            detector_idx = i;
+        }
+    }
+    if(detector_idx == 5){
+        std::cout << "Invalid detector type" << std::endl;
+        return 0;
+    }
+
+    if(hasInput && hasDetector) {
+        cv::Mat frame;
+            if(file_extension == ".MOV") {
+                cv::VideoCapture cap(img_path);
+                while(1) {
+                    bSuccess = cap.read(frame);
+                    std::cout << bSuccess << std::endl;
+                    if (bSuccess == false) {
+                        break;
+                    }
+                    cv::Mat imgout = frame;
+                    detectFrame(frame,imgout,detector_idx,N);
+                    cv::VideoWriter video(output_file_name,cv::VideoWriter::fourcc('m','p','4','v'),10, cv::Size(frame.rows,frame.cols));
+                }
+            } else {
+                frame = cv::imread(img_path);
+                cv::Mat imgout = frame;
+                detectFrame(frame,imgout,detector_idx,N);
+                cv::imwrite(output_file_name,imgout);
+            }
+    } else {
+        if(!hasInput) {
+            std::cout << "No image path provided" << std::endl;
+        }
+        if(!hasDetector) {
+            std::cout << "No detector type provided" << std::endl;
+        }
+    }    
     return 0;
 }
 
