@@ -107,23 +107,33 @@ int main(int argc, char *argv[])
 
     if(hasInput && hasDetector) {
         cv::Mat frame;
+        cv::VideoWriter video;
             if(file_extension == ".MOV") {
                 cv::VideoCapture cap(img_path);
+                cv::VideoWriter video(output_file_name,cv::VideoWriter::fourcc('m','p','4','v'),10, cv::Size(1920,1080));
                 while(1) {
                     bSuccess = cap.read(frame);
-                    std::cout << bSuccess << std::endl;
                     if (bSuccess == false) {
                         break;
                     }
                     cv::Mat imgout = frame;
                     detectFrame(frame,imgout,detector_idx,N);
-                    cv::VideoWriter video(output_file_name,cv::VideoWriter::fourcc('m','p','4','v'),10, cv::Size(frame.rows,frame.cols));
+                    if(hasExport){
+                        video.write(imgout);
+                    }
                 }
+                video.release();
             } else {
                 frame = cv::imread(img_path);
+                if(frame.empty()){
+                    std::cout << "Invalid path, unable to open image" << std::endl;
+                    return 0;
+                }
                 cv::Mat imgout = frame;
                 detectFrame(frame,imgout,detector_idx,N);
-                cv::imwrite(output_file_name,imgout);
+                if(hasExport){
+                    cv::imwrite(output_file_name,imgout);
+                }
             }
     } else {
         if(!hasInput) {
