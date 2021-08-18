@@ -109,8 +109,7 @@ int main(int argc, char* argv[])
     
     // Camera calibration stuff 
     cv::Mat cameraMatrix,distCoeffs;
-    std::vector<cv::Mat> R, T;
-    int calibFlag = cv::CALIB_THIN_PRISM_MODEL;
+    std::vector<cv::Mat> R, rNCc;
     double rms;
 
     for (const auto & entry : fs::directory_iterator(s.input_dir)){
@@ -130,14 +129,13 @@ int main(int argc, char* argv[])
             cornerSubPix(img_gray,corners, Size(11, 11), Size(-1, -1), termcrit);
             drawChessboardCorners(input_image, patternsize, Mat(corners), patternfound);
             num_chessboards_detected++;
-            putText(input_image,"Image "+image_path.stem().string()+image_path.extension().string()+" | chessBoardCorners found "+std::to_string(num_chessboards_detected),cv::Point(25,25),cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(255, 100, 200),2);
+            putText(input_image,"Image "+image_path.stem().string()+image_path.extension().string()+" | chessBoardCorners found "+std::to_string(patternfound),cv::Point(25,25),cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(255, 100, 200),2);
             objectPoints.push_back(objp);
             imagePoints.push_back(corners);
         } else {
             std::cout << "Found no chessboard corners in image: " << image_path.stem().string()+image_path.extension().string() << std::endl;
         }
         if(showImage) {
-            resize(input_image, input_image,screenSize);
             imshow("Detected Chessboard",input_image);
             wait = cv::waitKey(0);
         }
@@ -146,8 +144,8 @@ int main(int argc, char* argv[])
         }    
     }
     showImage = true;
-    int flag = cv::CALIB_THIN_PRISM_MODEL;
-    rms = cv::calibrateCamera(objectPoints, imagePoints, cv::Size(img_gray.rows,img_gray.cols), cameraMatrix, distCoeffs, R, T, flag);
+    int flag = cv::CALIB_THIN_PRISM_MODEL | cv::CALIB_TILTED_MODEL | cv::CALIB_RATIONAL_MODEL;
+    rms = cv::calibrateCamera(objectPoints, imagePoints, cv::Size(img_gray.cols,img_gray.rows), cameraMatrix, distCoeffs, R, rNCc, flag);
 
     //  Calculate the reprojection error for each frame
     std::vector<Point2f> imagePoints2;
@@ -160,18 +158,16 @@ int main(int argc, char* argv[])
         cv::cvtColor(input_image, img_gray, cv::COLOR_BGR2GRAY);
         bool patternfound = findChessboardCorners(img_gray, patternsize, corners);
         if(patternfound) {
-            projectPoints(Mat(objectPoints[i]), R[i], T[i],
-                cameraMatrix, distCoeffs, imagePoints2);
+            projectPoints(Mat(objectPoints[i]), R[i], rNCc[i], cameraMatrix, distCoeffs, imagePoints2);
             err = norm(Mat(imagePoints[i]), Mat(imagePoints2), NORM_L2);
             int n = (int)objectPoints[i].size();
             totalErr += err*err;
             totalPoints += n;
             drawChessboardCorners(input_image, patternsize, Mat(imagePoints2), patternfound);
-            putText(input_image,"Image "+image_path.stem().string()+image_path.extension().string()+" | re-projection error "+std::to_string(err),cv::Point(25,25),cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(255, 100, 200),2);
+            putText(input_image,"Image "+image_path.stem().string()+image_path.extension().string()+" | re-projection error "+std::to_string(std::sqrt(err/imagePoints2.size())),cv::Point(25,25),cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(255, 100, 200),2);
             i++;
         }
         if(showImage) {
-            resize(input_image, input_image,screenSize);
             imshow("Detected Chessboard",input_image);
             wait = cv::waitKey(0);
         }
@@ -182,7 +178,7 @@ int main(int argc, char* argv[])
     showImage = true;
     double average_rms = std::sqrt(totalErr/totalPoints);
     std::cout << "No. of images used : " << num_chessboards_detected << std::endl;
-    std::cout << "Flag for calibrateCamera : " << "CALIB_THIN_PRISM_MODEL" << std::endl;
+    std::cout << "Flag for calibrateCamera : " << std::bitset<16>(flag) << std::endl;
     std::cout << "inputImageSize : [" << input_image.cols << "x" << input_image.rows << "]" << std::endl;
     std::cout << "cameraMatrix : " << cameraMatrix << std::endl;
     std::cout << "distCoeffs : " << distCoeffs << std::endl;
@@ -202,66 +198,70 @@ int main(int argc, char* argv[])
         bool patternfound = findChessboardCorners(img_gray, patternsize, corners);
         if(patternfound) {
             std::vector<Point3f> point1, point2;
-            //Bottom
-            point1.push_back(cv::Point3f(0,0,0));
-            point2.push_back(cv::Point3f(0,s.boardSize.height-1,0));
-            point1.push_back(cv::Point3f(0,0,0));
-            point2.push_back(cv::Point3f(s.boardSize.width-1,0,0));
-            point1.push_back(cv::Point3f(s.boardSize.width-1,0,0));
-            point2.push_back(cv::Point3f(s.boardSize.width-1,s.boardSize.height-1,0));
-            point1.push_back(cv::Point3f(s.boardSize.width-1,s.boardSize.height-1,0));
-            point2.push_back(cv::Point3f(0,s.boardSize.height-1,0));
-            //Top
-            point1.push_back(cv::Point3f(0,0,-10.454545));
-            point2.push_back(cv::Point3f(0,s.boardSize.height-1,-10.454545));
-            point1.push_back(cv::Point3f(0,0,-10.454545));
-            point2.push_back(cv::Point3f(s.boardSize.width-1,0,-10.454545));
-            point1.push_back(cv::Point3f(s.boardSize.width-1,0,-10.454545));
-            point2.push_back(cv::Point3f(s.boardSize.width-1,s.boardSize.height-1,-10.454545));
-            point1.push_back(cv::Point3f(s.boardSize.width-1,s.boardSize.height-1,-10.454545));
-            point2.push_back(cv::Point3f(0,s.boardSize.height-1,-10.454545));
-            //Pillars
-            point1.push_back(cv::Point3f(0,0,0));
-            point2.push_back(cv::Point3f(0,0,-10.454545));
-            point1.push_back(cv::Point3f(0,s.boardSize.height-1,0));
-            point2.push_back(cv::Point3f(0,s.boardSize.height-1,-10.454545));
-            point1.push_back(cv::Point3f(s.boardSize.width-1,0,0));
-            point2.push_back(cv::Point3f(s.boardSize.width-1,0,-10.454545));
-            point1.push_back(cv::Point3f(s.boardSize.width-1,s.boardSize.height-1,0));
-            point2.push_back(cv::Point3f(s.boardSize.width-1,s.boardSize.height-1,-10.454545));         
-
+            float height = (s.boardSize.height-1);
+            float width = (s.boardSize.width-1);
+            float top = -10.454545;
+            float n = 50.0;
+            for(int k = 0; k < n; k++) {
+                // Bottom
+                point1.push_back(cv::Point3f(0,(k/n)*height,0));
+                point2.push_back(cv::Point3f(0,((k+1)/n)*height,0));
+                point1.push_back(cv::Point3f((k/n)*width,0,0));
+                point2.push_back(cv::Point3f(((k+1)/n)*width,0,0));
+                point1.push_back(cv::Point3f(width,(k/n)*height,0));
+                point2.push_back(cv::Point3f(width,((k+1)/n)*height,0));
+                point1.push_back(cv::Point3f((k/n)*width,height,0));
+                point2.push_back(cv::Point3f(((k+1)/n)*width,height,0));
+                // Top
+                point1.push_back(cv::Point3f(0,(k/n)*height,top));
+                point2.push_back(cv::Point3f(0,((k+1)/n)*height,top));
+                point1.push_back(cv::Point3f((k/n)*width,0,top));
+                point2.push_back(cv::Point3f(((k+1)/n)*width,0,top));
+                point1.push_back(cv::Point3f(width,(k/n)*height,top));
+                point2.push_back(cv::Point3f(width,((k+1)/n)*height,top));
+                point1.push_back(cv::Point3f((k/n)*width,height,top));
+                point2.push_back(cv::Point3f(((k+1)/n)*width,height,top));
+                //Pillars
+                point1.push_back(cv::Point3f(0,0,(k/n)*top));
+                point2.push_back(cv::Point3f(0,0,(k+1)/n*top));
+                point1.push_back(cv::Point3f(0,height,(k/n)*top));
+                point2.push_back(cv::Point3f(0,height,(k+1)/n*top));
+                point1.push_back(cv::Point3f(width,0,(k/n)*top));
+                point2.push_back(cv::Point3f(width,0,(k+1)/n*top));
+                point1.push_back(cv::Point3f(width,height,(k/n)*top));
+                point2.push_back(cv::Point3f(width,height,(k+1)/n*top));        
+            }
             std::vector<Point2f> cubePoints1;
             std::vector<Point2f> cubePoints2;
-
-            projectPoints(point1, R[i], T[i],cameraMatrix, distCoeffs, cubePoints1);
-            projectPoints(point2, R[i], T[i],cameraMatrix, distCoeffs, cubePoints2);
-
+            std::vector<Point2f> passedCubePoints1;
+            std::vector<Point2f> passedCubePoints2;
+            projectPoints(point1, R[i], rNCc[i],cameraMatrix, distCoeffs, cubePoints1);
+            projectPoints(point2, R[i], rNCc[i],cameraMatrix, distCoeffs, cubePoints2);
             for (int p = 0; p < cubePoints1.size(); p++) {
                 cv::Mat Rcn;
                 Rodrigues(R[i],Rcn);
-                cv::Mat rPNn1 = (cv::Mat_<double>(3,1) << cubePoints1[p].x, cubePoints1[p].y, 0.0);
-                cv::Mat rPNn2 = (cv::Mat_<double>(3,1) << cubePoints2[p].x, cubePoints2[p].y, 0.0);
-                cv::Mat rPCc1 = Rcn*(rPNn1 + T[i]);
-                cv::Mat rPCc2 = Rcn*(rPNn2 + T[i]);
-                std::cout << rPCc1 << std::endl;
-                std::cout << rPCc2 << std::endl;
-                if(rPCc1.at<double>(2) < 0.0 || rPCc2.at<double>(2) < 0.0) {
-                    std::cout << "Removed points" << rPCc1.at<double>(2) << rPCc2.at<double>(2) << std::endl;
-                    cubePoints1.erase(cubePoints1.begin()+p);
-                    cubePoints2.erase(cubePoints2.begin()+p);
+                cv::Mat rPNn1 = (cv::Mat_<double>(3,1) << point1[p].x, point1[p].y, point1[p].z);
+                cv::Mat rPNn2 = (cv::Mat_<double>(3,1) << point2[p].x, point2[p].y, point2[p].z);
+                cv::Mat rPCc1 = Rcn*(rPNn1) + rNCc[i];
+                cv::Mat rPCc2 = Rcn*(rPNn2) + rNCc[i];
+                cv::Mat e3 = (cv::Mat_<double>(3,1) << 0.0,0.0,1.0);
+                double dotz1 = rPCc1.dot(e3)/cv::norm(rPCc1);
+                double dotz2 = rPCc2.dot(e3)/cv::norm(rPCc2);
+                double thresh = std::cos((3.14/180.0)*70.0);
+                if(dotz1 > thresh || dotz2 > thresh) {
+                    passedCubePoints1.push_back(cubePoints1[p]);
+                    passedCubePoints2.push_back(cubePoints2[p]);
                 }
             }
-
-            for(int j = 0; j < cubePoints1.size(); j++) {
-                if(cubePoints1[j].x > 0 && cubePoints1[j].y > 0  && cubePoints2[j].x > 0 && cubePoints2[j].y > 0 && cubePoints1[j].x < 1920 && cubePoints1[j].y < 1440  && cubePoints2[j].x < 1920 && cubePoints2[j].y < 1440) {
-                    line(input_image,cubePoints1[j],cubePoints2[j],Scalar(std::rand() % 255,std::rand() % 255,std::rand() % 255),FONT_THICKNESS,0);
-                } 
+            for(int j = 0; j < passedCubePoints1.size(); j++) {
+                if(passedCubePoints1[j].x > 0 && passedCubePoints1[j].y > 0  && passedCubePoints2[j].x > 0 && passedCubePoints2[j].y > 0 && passedCubePoints1[j].x < input_image.cols && passedCubePoints1[j].y < input_image.rows  && passedCubePoints2[j].x < input_image.cols && passedCubePoints2[j].y < input_image.rows) {
+                    line(input_image,passedCubePoints1[j],passedCubePoints2[j],Scalar(0,255,0),FONT_THICKNESS,0);
+                }
             }
             putText(input_image,"Image "+image_path.stem().string()+image_path.extension().string()+" | Projection of shape",cv::Point(25,25),cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(255, 100, 200),2);
             i++;
         }
         if(showImage) {
-            resize(input_image, input_image,screenSize);
             imshow("Detected Chessboard",input_image);
             wait = cv::waitKey(0);
         }
