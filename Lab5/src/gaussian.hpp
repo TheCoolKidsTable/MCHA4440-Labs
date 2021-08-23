@@ -6,6 +6,7 @@
 #include <functional>
 #include <Eigen/Core>
 #include <Eigen/QR>
+#include <iostream>
 
 void conditionGaussianOnMarginal(const Eigen::VectorXd & muyxjoint, const Eigen::MatrixXd & Syxjoint, const Eigen::VectorXd & y, Eigen::VectorXd & muxcond, Eigen::MatrixXd & Sxcond);
 
@@ -33,17 +34,28 @@ void affineTransform(
     assert(mux.rows() == Sxx.rows());
 
     // TODO: Transform function
-
-    // MATLAB:
-    // % Evaluate h and obtain additive noise and Jacobian
-    // [muy, SR, C] = h(mux);
-    // ny = length(muy);
-    // R = triu(qr([Sxx*C.';SR],0));
-    // Syy = R(1:ny,:);
-
+    Eigen::MatrixXd SR;
+    Eigen::MatrixXd C;
+    h(mux,muy,SR,C);
 
     // TODO: Check outputs of h
+    assert(muy.cols() == 1);
+    assert(muy.rows() > 0);
 
+    assert(SR.rows() == muy.size());
+    assert(SR.cols() == muy.size());
+
+    assert(C.rows() == muy.size());
+    assert(C.cols() == mux.size());
+
+    // QR Decomp
+    Eigen::MatrixXd A(Sxx.rows()+SR.rows(), SR.cols());
+    A << Sxx*C.transpose(),SR;
+
+    Eigen::HouseholderQR<Eigen::MatrixXd> qr(A);
+    Eigen::MatrixXd R;
+    R = qr.matrixQR().triangularView<Eigen::Upper>();
+    Syy = R.topRows(SR.cols());
 }
 
 // --------------------------------------------------------------------------------------
