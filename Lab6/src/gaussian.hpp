@@ -31,16 +31,11 @@ Scalar logGaussian(const Eigen::Matrix<Scalar,Eigen::Dynamic,1> &x,
     assert(x.size() == mu.size());
     assert(S.rows() == S.cols());
     assert(S.rows() == x.size());
-    
-    Scalar log_sum;
-    Scalar n = x.rows();
-    for(int i = 0; i < x.rows(); i++){
-        for(int j = 0; j < x.rows(); j++){
-            log_sum += std::log(std::abs(S(i,j)));
-        }
-    }
-    Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> S_part = S.inverse().transpose()*(x-mu);
-    return 0.5*S_part.norm()*S_part.norm()+ (n/2)*std::log(2*M_PI) + log_sum;
+
+    Scalar n = x.rows();    
+    Scalar log_sum = S.diagonal().array().abs().log().sum();
+    Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> Z = S.template triangularView<Eigen::Upper>().transpose().solve(x - mu);
+    return -0.5*Z.squaredNorm() - n/2*std::log(2*M_PI) - log_sum;
 
 }
 
@@ -50,8 +45,9 @@ Scalar logGaussian(const Eigen::Matrix<Scalar,Eigen::Dynamic,1> &x,
                    const Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> &S,
                    Eigen::Matrix<Scalar,Eigen::Dynamic,1> &g)
 {
-    // TODO: Compute gradient of log N(x;mu,P) w.r.t x 
-
+    // TODO: Compute gradient of log N(x;mu,P) w.r.t x
+    Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> Z = S.template triangularView<Eigen::Upper>().transpose().solve(x - mu);
+    g = -S.template triangularView<Eigen::Upper>().solve(Z);
     return logGaussian(x,mu,S);
 }
 
@@ -63,7 +59,11 @@ Scalar logGaussian(const Eigen::Matrix<Scalar,Eigen::Dynamic,1> &x,
                    Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> &H)
 {
     // TODO: Compute Hessian of log N(x;mu,P) w.r.t x 
-
+    // S\(S.'\I)
+    H = -S.template triangularView<Eigen::Upper>().solve(
+            S.template triangularView<Eigen::Upper>().transpose().solve(
+                Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic>::Identity(S.rows(),S.rows()))
+        );
     return logGaussian(x,mu,S,g);
 }
 

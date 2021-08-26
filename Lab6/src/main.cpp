@@ -21,11 +21,15 @@ int main(int argc, char *argv[])
     Eigen::VectorXd x(2);
     x << 10.0, 10.0;
     std::cout << "Initial x =\n" << x << "\n" << std::endl;
-
-    RosenbrockAnalytical func;
-    // TODO: Call fminNewtonTrust
     Eigen::VectorXd g;
     Eigen::MatrixXd H;
+
+    RosenbrockAnalytical func;
+    std::cout << "f =\n" << func(x,g,H) << "\n" << std::endl;
+    std::cout << "g =\n" << g << "\n" << std::endl;
+    std::cout << "H =\n" << H << "\n" << std::endl;
+    // TODO: Call fminNewtonTrust
+
     fminNewtonTrust(func,x,g,H,3);
     std::cout << "Final x =" << std::endl;
     std::cout <<  x << std::endl;
@@ -39,7 +43,7 @@ int main(int argc, char *argv[])
 
 
     // Comment out the following line to move on to task 2
-    return 0;
+    // return 0;
     // ------------------------------------------------------
     // TASK 2:
     // ------------------------------------------------------

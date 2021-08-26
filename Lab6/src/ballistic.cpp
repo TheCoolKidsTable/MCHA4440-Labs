@@ -1,5 +1,9 @@
 
 #include "ballistic.h"
+#include <autodiff/forward.hpp>
+#include <autodiff/forward/eigen.hpp>
+// #include <autodiff/forward/dual.hpp>
+// #include <autodiff/forward/dual/eigen.hpp>
 
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
@@ -143,6 +147,8 @@ void BallisticMeasurementModel::operator()(const Eigen::VectorXd & x, const Eige
 
 #include "gaussian.hpp"
 
+using std::sqrt;
+
 // Templated version of ballisticLogLikelihood
 // Note: templates normally should live in a template header (.hpp), but
 //       since all instantiations of this template are used only in this
@@ -157,11 +163,11 @@ static Scalar ballisticLogLikelihood(const Eigen::Matrix<Scalar,Eigen::Dynamic,1
     const double & r1   = param.r1;
     const double & r2   = param.r2;
 
-    // TODO: Copy appropriate parts of the measurement model, but use the Scalar type.
-    // 
-    // 
-    // 
-    // 
+    h(0) = sqrt(r1*r1 + (x(0)-r2)*(x(0)-r2));
+    // TODO: upper Cholesky factor of measurement covariance
+    SR = Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic>::Zero(1,1);
+    SR.resize(1,1);
+    SR(0) = 50;
 
     return logGaussian(y, h, SR);
 }
@@ -175,23 +181,20 @@ double BallisticLogLikelihood::operator()(const Eigen::VectorXd & y, const Eigen
 
 double BallisticLogLikelihood::operator()(const Eigen::VectorXd & y, const Eigen::VectorXd & x, const Eigen::VectorXd & u, const BallisticParameters & param, Eigen::VectorXd &g)
 {
-    // TODO: Evaluate log N(y;h(x),R)
-    // TODO: Evaluate gradient of log N(y;h(x),R)
-    // Use autodiff or appropriate analytical expression
-    double logLikelihood = 0;
+    Eigen::Matrix<autodiff::dual,Eigen::Dynamic,1> xdual = x.cast<autodiff::dual>();
+    autodiff::dual fdual;
+    g = gradient(ballisticLogLikelihood<autodiff::dual>, wrt(xdual), at(y,xdual,u,param), fdual);
 
-    return logLikelihood;
+    return val(fdual);
 }
 
 double BallisticLogLikelihood::operator()(const Eigen::VectorXd & y, const Eigen::VectorXd & x, const Eigen::VectorXd & u, const BallisticParameters & param, Eigen::VectorXd &g, Eigen::MatrixXd &H)
 {
-    // TODO: Evaluate log N(y;h(x),R)
-    // TODO: Evaluate gradient of log N(y;h(x),R)
-    // TODO: Evaluate Hessian of log N(y;h(x),R)
-    // Use autodiff or appropriate analytical expression
-
-    double logLikelihood = 0;
-    
-    return logLikelihood;
+    using dual2nd = autodiff::HigherOrderDual<2>;
+    Eigen::Matrix<dual2nd,Eigen::Dynamic,1> xdual = x.cast<dual2nd>();
+    dual2nd fdual;
+    H = hessian(ballisticLogLikelihood<dual2nd>, wrt(xdual), at(y,xdual,u,param), fdual, g);
+    return val(fdual);
 }
+
 
