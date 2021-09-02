@@ -36,12 +36,11 @@ Scalar logGaussian(const Eigen::Matrix<Scalar,Eigen::Dynamic,1> &x,
     assert(S.rows() == S.cols());
     assert(S.rows() == x.size());
 
-    // Compute log N(x;mu,P) where P = S.'*S
-    // log N(x;mu,P) = -0.5*(x - mu).'*inv(P)*(x - mu) - 0.5*log(det(2*pi*P))
+    Scalar n = x.rows();    
+    Scalar log_sum = S.diagonal().array().abs().log().sum();
+    Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> Z = S.template triangularView<Eigen::Upper>().transpose().solve(x - mu);
+    return -0.5*Z.squaredNorm() - n/2*std::log(2*M_PI) - log_sum;
 
-    // TODO: Copy from Lab 6
-    assert(0);
-    return 0;
 }
 
 template <typename Scalar>
@@ -50,10 +49,10 @@ Scalar logGaussian(const Eigen::Matrix<Scalar,Eigen::Dynamic,1> &x,
                    const Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> &S,
                    Eigen::Matrix<Scalar,Eigen::Dynamic,1> &g)
 {
-    // Compute gradient of log N(x;mu,P) with respect to x, where P = S.'*S
-    // TODO: Copy from Lab 6
-    assert(0);
-    return 0;
+    // TODO: Compute gradient of log N(x;mu,P) w.r.t x
+    Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> Z = S.template triangularView<Eigen::Upper>().transpose().solve(x - mu);
+    g = -S.template triangularView<Eigen::Upper>().solve(Z);
+    return logGaussian(x,mu,S);
 }
 
 template <typename Scalar>
@@ -63,10 +62,13 @@ Scalar logGaussian(const Eigen::Matrix<Scalar,Eigen::Dynamic,1> &x,
                    Eigen::Matrix<Scalar,Eigen::Dynamic,1> &g,
                    Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> &H)
 {
-    // Compute hessian of log N(x;mu,P) with respect to x, where P = S.'*S
-    // TODO: Copy from Lab 6
-    assert(0);
-    return 0;
+    // TODO: Compute Hessian of log N(x;mu,P) w.r.t x 
+    // S\(S.'\I)
+    H = -S.template triangularView<Eigen::Upper>().solve(
+            S.template triangularView<Eigen::Upper>().transpose().solve(
+                Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic>::Identity(S.rows(),S.rows()))
+        );
+    return logGaussian(x,mu,S,g);
 }
 
 
@@ -92,8 +94,29 @@ void affineTransform(
     assert(Sxx.cols() == Sxx.rows());
     assert(mux.rows() == Sxx.rows());
 
-    // TODO: Copy from Lab 5
-    assert(0);
+        // TODO: Transform function
+    Eigen::MatrixXd SR;
+    Eigen::MatrixXd C;
+    h(mux,muy,SR,C);
+
+    // TODO: Check outputs of h
+    assert(muy.cols() == 1);
+    assert(muy.rows() > 0);
+
+    assert(SR.rows() == muy.size());
+    assert(SR.cols() == muy.size());
+
+    assert(C.rows() == muy.size());
+    assert(C.cols() == mux.size());
+
+    // QR Decomp
+    Eigen::MatrixXd A(Sxx.rows()+SR.rows(), SR.cols());
+    A << Sxx*C.transpose(),SR;
+
+    Eigen::HouseholderQR<Eigen::MatrixXd> qr(A);
+    Eigen::MatrixXd R;
+    R = qr.matrixQR().triangularView<Eigen::Upper>();
+    Syy = R.topRows(SR.cols());
 
 }
 

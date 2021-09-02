@@ -268,19 +268,21 @@ void quadricPlot_update(QuadricPlot & qp, const Eigen::VectorXd & murPNn, const 
     // TODO
     // ---------------------------------------------------
     double a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
+
+    gaussianConfidenceQuadric3Sigma(murPNn,SrPNn,Q);
     
     // Diagonals
-    a0      = 1;
-    a1      = 1;
-    a2      = 1;
-    a9      = -1;
+    a0      = Q(0,0);
+    a1      = Q(1,1);
+    a2      = Q(2,2);
+    a9      = Q(3,3);
     // Cross terms
-    a3      = 0;
-    a4      = 0;
-    a5      = 0;
-    a6      = 0;
-    a7      = 0;
-    a8      = 0;
+    a3      = 2*Q(0,1);
+    a4      = 2*Q(1,2);
+    a5      = 2*Q(0,2);
+    a6      = 2*Q(0,3);
+    a7      = 2*Q(1,3);
+    a8      = 2*Q(2,3);
 
     // ---------------------------------------------------
     // 
@@ -662,7 +664,7 @@ void updatePlotStates(const cv::Mat & view, const Eigen::VectorXd & mu, const Ei
     assert(S.rows() == nx_all);
     assert(S.cols() == nx_all);
 
-    int nx      = 6;                    // Number of camera states
+    int nx      = 6;                    // Number of camera state   s
     assert( (nx_all - nx)>0);           // Check that there are features in the scene
     assert( (nx_all - nx)% 3 == 0);     // Check that the dimension for features is correct
     int nr      = (nx_all - nx)/3;      // Number of features
@@ -682,7 +684,10 @@ void updatePlotStates(const cv::Mat & view, const Eigen::VectorXd & mu, const Ei
     // ---------------------------------------------------
 
     // Calculate marginal distribution for camera position
-
+    murCNn = mu.segment(0,3);
+    Eigen::HouseholderQR<Eigen::MatrixXd> qr(S.middleCols(0,3));
+    SrCNn = Eigen::MatrixXd(qr.matrixQR().triangularView<Eigen::Upper>()).block(0,0,3,3);
+    
 
     // ---------------------------------------------------
     // 
@@ -718,8 +723,9 @@ void updatePlotStates(const cv::Mat & view, const Eigen::VectorXd & mu, const Ei
         // ---------------------------------------------------
 
         // Calculate marginal distribution for feature positions
-
-
+        murPNn = mu.segment(6+i*3,3);
+        Eigen::HouseholderQR<Eigen::MatrixXd> qr(S.middleCols(6+i*3,3));
+        SrPNn = Eigen::MatrixXd(qr.matrixQR().triangularView<Eigen::Upper>()).block(0,0,3,3);
         // ---------------------------------------------------
         // 
 
@@ -779,7 +785,25 @@ void plotFeatureGaussianConfidenceEllipse(cv::Mat & img, const Eigen::VectorXd &
     // Calculate and draw the 3 sigma confidence region of 
     // (murPNn, SrPNn) onto the image as an ellipse parametrised 
     // by (murQOi, SrQOi)
-
+    Eigen::VectorXd  muimage;
+    Eigen::MatrixXd Skimage;
+    Eigen::VectorXd rQOi;
+    cv::Point point;
+    int flag = worldToPixel(murPNn, eta, param, rQOi);
+    if(flag == 0) {
+        cv::drawMarker(img, cv::Point(rQOi(0),rQOi(1)),cv::Scalar(color(2),color(1),color(0)),cv::MARKER_CROSS,24,2);
+        affineTransform(murPNn, SrPNn, h, muimage, Skimage);
+        Eigen::MatrixXd x;
+        gaussianConfidenceEllipse3Sigma(muimage,Skimage,x);
+        std::cout<< "x " << x << std::endl;
+        std::cout<< "x rows" << x.rows() << std::endl;
+        std::cout<< "x cols" << x.cols() << std::endl;
+        for(int i = 0; i < x.cols() - 1; i++) {
+            // if(worldToPixel() == 0 && worldToPixel() == 0) {
+                cv::line(img, cv::Point(x(0,i),x(1,i)) ,cv::Point(x(0,i+1),x(1,i+1)),cv::Scalar(color(2),color(1),color(0)),2);
+            // }
+        }
+    }
 
     // ---------------------------------------------------
     // 

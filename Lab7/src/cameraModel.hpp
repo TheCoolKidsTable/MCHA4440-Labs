@@ -9,7 +9,6 @@
 #include "rotation.hpp"
 #include "settings.h"
 
-
 struct CameraParameters{
     cv::Mat Kc;                 // Camera Matrix
     cv::Mat distCoeffs;         // Distortion coefficients
@@ -49,9 +48,13 @@ int worldToPixel(const Eigen::Matrix<Scalar, Eigen::Dynamic, 1> & rPNn, const Ei
     typedef Eigen::Matrix<Scalar, Eigen::Dynamic, 1> Vector;
     typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Matrix;
 
+
+
     assert(rPNn.rows() == 3);
     assert(rPNn.cols() == 1);
-
+    assert(param.Kc.rows == 3);
+    assert(param.Kc.cols == 3);
+    assert(param.distCoeffs.cols == 1);
     assert(eta.rows() == 6);
     assert(eta.cols() == 1);
 

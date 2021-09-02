@@ -1,5 +1,6 @@
 #include <Eigen/Core>
 #include <cassert>
+#include <iostream>
 
 #include "gaussian.hpp"
 
@@ -12,7 +13,7 @@
 // 
 // conditionGaussianOnMarginal
 // 
-// --------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------- ------
 // --------------------------------------------------------------------------------------
 
 void conditionGaussianOnMarginal(
@@ -23,7 +24,15 @@ void conditionGaussianOnMarginal(
     Eigen::MatrixXd & SxGy)
 {
     // TODO: Copy from Lab 4
-    assert(0);
+    int ny = y.rows();
+    int nx = Syx.cols() - ny;  
+    Eigen::MatrixXd S1  = Syx.topLeftCorner(ny,ny);
+    Eigen::MatrixXd S2 =  Syx.topRightCorner(ny,nx);
+    Eigen::MatrixXd S3 =  Syx.bottomRightCorner(nx,nx); 
+    Eigen::MatrixXd mux =  muyx.tail(nx);
+    Eigen::MatrixXd muy = muyx.head(ny);
+    muxGy = mux + S2.transpose()*(S1.triangularView<Eigen::Upper>().transpose().solve(y - muy));
+    SxGy = S3;
 }
 
 
@@ -44,7 +53,21 @@ void gaussianConfidenceEllipse3Sigma(const Eigen::VectorXd & mu, const Eigen::Ma
     int nsamples  = 100;
 
     // TODO: 
-    assert(0);
+    // assert(0);
+    x.resize(2,nsamples);
+    Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(nsamples, 0, 2*M_PI);
+    Eigen::MatrixXd Z;
+    Z.resize(2,nsamples);
+    double r = sqrt(11.8292);
+    Eigen::MatrixXd zx; 
+    zx.resize(nsamples, 1);
+    zx = r*t.array().cos();
+    Eigen::MatrixXd zy;
+    zy.resize(nsamples, 1);
+    zy = r*t.array().sin();
+    Z << zx.transpose(), zy.transpose();
+
+    x = (S.transpose()*Z).colwise() + mu;
 
 
     assert(x.cols() == nsamples);
@@ -57,8 +80,15 @@ void gaussianConfidenceQuadric3Sigma(const Eigen::VectorXd &mu, const Eigen::Mat
     assert(mu.rows() == nx);
     assert(S.rows() == nx);
     assert(S.cols() == nx);
-
-    // TODO: 
-    assert(0);
+    Eigen::MatrixXd z =   S.triangularView<Eigen::Upper>().transpose().solve(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>::Identity(S.rows(),S.rows()))*mu;
+    Eigen::MatrixXd topLeft = S.triangularView<Eigen::Upper>().solve( S.triangularView<Eigen::Upper>().transpose().solve(
+                Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>::Identity(S.rows(),S.rows()))
+        );
+    Eigen::MatrixXd topRight =  -S.triangularView<Eigen::Upper>().solve(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>::Identity(S.rows(),S.rows()))*z;
+    Eigen::MatrixXd bottomLeft = -z.transpose()*S.triangularView<Eigen::Upper>().transpose().solve(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>::Identity(S.rows(),S.rows()));
+    Eigen::MatrixXd zTz = z.transpose()*z;
+    double bottomRight = zTz(0) - 14.1564;
+    Q.resize(4,4);
+    Q << topLeft,topRight,bottomLeft,bottomRight;
 
 }

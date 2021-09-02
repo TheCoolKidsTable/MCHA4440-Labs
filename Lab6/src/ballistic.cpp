@@ -1,9 +1,7 @@
 
 #include "ballistic.h"
-#include <autodiff/forward.hpp>
-#include <autodiff/forward/eigen.hpp>
-// #include <autodiff/forward/dual.hpp>
-// #include <autodiff/forward/dual/eigen.hpp>
+// #include <autodiff/forward.hpp>
+// #include <autodiff/forward/eigen.hpp>
 
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------

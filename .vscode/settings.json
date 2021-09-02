@@ -79,6 +79,7 @@
         "optional": "cpp",
         "random": "cpp",
         "set": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "xhash": "cpp"
     }
 }
