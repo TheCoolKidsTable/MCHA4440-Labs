@@ -22,7 +22,11 @@ struct MeasurementPointLandmarkSingle{
 
         // TODO:
         // Some call to worldToPixel
-        int res = - 1; // what ever the return value of worldToPixel would be
+        Eigen::MatrixBase<DerivedOutA> & rQOi = const_cast< Eigen::MatrixBase<DerivedOutA> &>(rQOi_);
+        rQOi.derived().resize(2,1);
+        Eigen::VectorXd eta = x.head(nCameraStates);
+        Eigen::VectorXd rPNn = x.segment(nCameraStates+j*featureDim,3);
+        int res = worldToPixel(rPNn,eta,param,rQOi); // what ever the return value of worldToPixel would be
 
         return res;
     }
@@ -39,34 +43,32 @@ struct MeasurementPointLandmarkSingle{
     
         // TODO
         // SR
+        SR(0,0) = 0.01;
+        SR(0,1) = 0.0;
+        SR(1,1) = 0.01;
+        SR(1,0) = 0.0;
 
         return res;
     }
 
     template<typename DerivedOutA, typename DerivedOutB, typename DerivedOutC>
     int operator()(const int & j, const Eigen::VectorXd & x, const CameraParameters & param, const Eigen::MatrixBase<DerivedOutA> & rQOi_, const Eigen::MatrixBase<DerivedOutB> & SR_, const Eigen::MatrixBase<DerivedOutC> & J_){
+        int res = operator()(j, x, param, rQOi_, SR_);
+
         assert(x.cols() == 1);
+
         const int nCameraStates = 6;
         const int featureDim    = 3;
         int nLandmarkStates     = x.rows() - nCameraStates;
         int nLandmarks          = nLandmarkStates / featureDim;
 
-        Eigen::MatrixBase<DerivedOutA> & rQOi   = const_cast<Eigen::MatrixBase<DerivedOutA> & >(rQOi_);
-        Eigen::MatrixBase<DerivedOutB> & SR     = const_cast<Eigen::MatrixBase<DerivedOutB> & >(SR_);
         Eigen::MatrixBase<DerivedOutC> & J      = const_cast<Eigen::MatrixBase<DerivedOutC> & >(J_);
-    
+        J.derived().resize(2,6 + 3*nLandmarks);
 
         assert(nLandmarkStates > 0);
         assert(j >= 0);
         // Check that the number of states for features is a multiple of featureDim
         assert((nLandmarkStates%featureDim) == 0);
-
-        // TODO:
-        // Some version of worldToPixel
-        // SR
-        // Jacobian
-        int res = - 1; // what ever the return value of worldToPixel would be
-
 
         return res;
     }

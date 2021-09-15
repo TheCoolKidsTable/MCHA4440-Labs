@@ -5,7 +5,8 @@
 
 // TODO 
 // include appropriate boost headers
-
+#include <boost/math/special_functions/gamma.hpp>
+#include <boost/math/special_functions/erf.hpp>
 
 
 // https://en.wikipedia.org/wiki/Inverse-chi-squared_distribution
@@ -13,16 +14,14 @@ double chi2inv(double p, double nu){
     assert(p>=0);
     assert(p<1);
     // TODO
-
-    return 0;
+    return 2*boost::math::gamma_q_inv(nu/2,p);
 
 }
 
 double normcdf(double z){
     // z = (x - mu)/(sigma)
     // TODO
-
-    return 0;
+    return 0.5*erfc(-z/std::sqrt(2));
 }
 
 

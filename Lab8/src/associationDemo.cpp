@@ -35,6 +35,10 @@ void inFillChessBoard(const Eigen::VectorXd & eta, const CameraParameters & para
 // 
 // ------------------------------------------------------------------------------------------
 
+bool sortByDistance(cv::DMatch const& lhs, cv::DMatch const& rhs) {
+        return lhs.distance < rhs.distance;
+}
+
 void runDescriptorMatcher(const Settings & s, const CameraParameters & param, bool doCalibrationGridInFill){
     
 
@@ -86,9 +90,57 @@ void runDescriptorMatcher(const Settings & s, const CameraParameters & param, bo
     // Initialise ORB
     // Detect keypoints in both frames
     // Find descriptors in both frames
+    cv::Ptr<cv::ORB> orb = cv::ORB::create(
+        maxNumFeatures,         // nfeatures
+        1.2f,                   // scaleFactor
+        8,                      // nlevels
+        31,                     // edgeThreshold
+        0,                      // firstLevel
+        2,                      // WTA_K
+        cv::ORB::HARRIS_SCORE,  // scoreType
+        31,                     // patchSize
+        20                      // fastThreshold 
+    );
+
+    //Create array to store keypoints
+    std::vector<cv::KeyPoint> keypointsA;
+    std::vector<cv::KeyPoint> keypointsB;
+
+    //Create descriptors?
+    cv::Mat descriptorsA;
+    cv::Mat descriptorsB;
+
+    // Detect the position of the Oriented FAST corner point.
+    orb->detect(outViewA, keypointsA);
+    orb->detect(outViewB, keypointsB);
+
+    // Calculate the BRIEF descriptor according to the position of the corner point
+    orb->compute(outViewA, keypointsA, descriptorsA);
+    orb->compute(outViewB, keypointsB, descriptorsB);
+
     // Run Brute force matcher
+    cv::BFMatcher matcher = cv::BFMatcher(cv::NORM_HAMMING);
+    std::vector<cv::DMatch> matches;
+    matcher.match(descriptorsA,descriptorsB,matches);
+    //Sort by distance 
+    std::sort(matches.begin(), matches.end(), &sortByDistance);
+    std::cout << "Keypoints A Size: " << keypointsA.size() << std::endl;
+    std::cout << "Keypoints B Size: " << keypointsB.size() << std::endl;
+    std::cout << "Matches Size: " << matches.size() << std::endl;
+    std::cout << "First 10 match distance:" << std::endl;
+    for(int i = 0; i < 10; i++) {
+        std::cout << i << matches[i].distance << ",";   
+    }
+    std::cout<< "" << std::endl;
+
     // ...
     // Display results with drawMatches
+    cv::Mat imgout;   
+    cv::drawMatches(outViewA,keypointsA,outViewB,keypointsB,matches,imgout);              
+    cv::namedWindow("matches", cv::WINDOW_NORMAL);
+    cv::resizeWindow("matches", 960, 540); 
+    cv::imshow("matches",imgout);
+    int wait = cv::waitKey(0);
 }
 
 

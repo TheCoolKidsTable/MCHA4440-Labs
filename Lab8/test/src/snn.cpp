@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "../../src/dataAssociation.h"
+#include "../../src/utility.h"
+#include "../../src/measurementPointLandmark.hpp"
 
 
 
@@ -49,21 +51,51 @@ SCENARIO("SNN: 1 landmark, 2 features, no association"){
         REQUIRE(param.Kc.cols == 3);
         REQUIRE(param.distCoeffs.cols == 1);
 
-        THEN("Calling snn"){
-            std::vector<int> idx;
-            double s = snn(mu, S, y, param, idx);
 
-            THEN("Surprisal is correct"){
-                REQUIRE(s == Approx(14.832478857591873));
-            }
+        THEN("normcdf dependency has a valid output"){
+            double x    = 0;
 
-            THEN("idx has the correct size"){
-                REQUIRE(idx.size() == 1);
+            double f    = normcdf(x);
 
-                AND_THEN("Landmark #1 unassociated"){
-                    REQUIRE(idx[0] == -1);
+            REQUIRE(f == Approx(0.5));    
+
+            THEN("MeasurementPointLandmarkBundle dependency allocates the correct output sizes"){
+                MeasurementPointLandmarkBundle bundle;
+                Eigen::VectorXd h;
+                Eigen::MatrixXd SR;
+                Eigen::MatrixXd J;
+                bundle(mu, param, h, SR, J);
+
+                REQUIRE(h.size()>0);
+                REQUIRE(h.rows()==2);
+                REQUIRE(h.cols()==1);
+
+                REQUIRE(SR.size()>0);
+                REQUIRE(SR.rows()==2);
+                REQUIRE(SR.cols()==2);
+
+                REQUIRE(J.size()>0);
+                REQUIRE(J.rows()==2);
+                REQUIRE(J.cols()==9);
+
+                THEN("Calling snn"){
+                    std::vector<int> idx;
+                    double s = snn(mu, S, y, param, idx);
+
+                    THEN("Surprisal is correct"){
+                        REQUIRE(s == Approx(14.832478857591873));
+                    }
+
+                    THEN("idx has the correct size"){
+                        REQUIRE(idx.size() == 1);
+
+                        AND_THEN("Landmark #1 unassociated"){
+                            REQUIRE(idx[0] == -1);
+                        }
+                    }
                 }
             }
+
         }
     }        
 }
@@ -111,19 +143,47 @@ SCENARIO("SNN: 1 landmark, 5 features, 1 feature associated"){
         REQUIRE(param.Kc.cols == 3);
         REQUIRE(param.distCoeffs.cols == 1);
 
-        THEN("Calling snn"){
-            std::vector<int> idx;
-            double s = snn(mu, S, y, param, idx);
+       THEN("normcdf dependency has a valid output"){
+            double x    = 0;
 
-            THEN("Surprisal is correct"){
-                REQUIRE(s == Approx(10.354214967374880));
-            }
+            double f    = normcdf(x);
 
-            THEN("idx has the correct size"){
-                REQUIRE(idx.size() == 1);
+            REQUIRE(f == Approx(0.5));    
 
-                AND_THEN("Landmark #1 associated"){
-                    REQUIRE(idx[0] == 4);
+            THEN("MeasurementPointLandmarkBundle dependency allocates the correct output sizes"){
+                MeasurementPointLandmarkBundle bundle;
+                Eigen::VectorXd h;
+                Eigen::MatrixXd SR;
+                Eigen::MatrixXd J;
+                bundle(mu, param, h, SR, J);
+
+                REQUIRE(h.size()>0);
+                REQUIRE(h.rows()==2);
+                REQUIRE(h.cols()==1);
+
+                REQUIRE(SR.size()>0);
+                REQUIRE(SR.rows()==2);
+                REQUIRE(SR.cols()==2);
+
+                REQUIRE(J.size()>0);
+                REQUIRE(J.rows()==2);
+                REQUIRE(J.cols()==9);
+
+                THEN("Calling snn"){
+                    std::vector<int> idx;
+                    double s = snn(mu, S, y, param, idx);
+
+                    THEN("Surprisal is correct"){
+                        REQUIRE(s == Approx(10.354214967374880));
+                    }
+
+                    THEN("idx has the correct size"){
+                        REQUIRE(idx.size() == 1);
+
+                        AND_THEN("Landmark #1 associated"){
+                            REQUIRE(idx[0] == 4);
+                        }
+                    }
                 }
             }
         }
@@ -182,23 +242,51 @@ SCENARIO("SNN: 2 landmarks, 8 features, 2 features associated"){
         REQUIRE(param.Kc.cols == 3);
         REQUIRE(param.distCoeffs.cols == 1);
 
-        THEN("Calling snn"){
-            std::vector<int> idx;
-            double s = snn(mu, S, y, param, idx);
+        THEN("normcdf dependency has a valid output"){
+            double x    = 0;
 
-            THEN("Surprisal is correct"){
-                REQUIRE(s == Approx(22.025573025596437));
-            }
+            double f    = normcdf(x);
 
-            THEN("idx has the correct size"){
-                REQUIRE(idx.size() == 2);
+            REQUIRE(f == Approx(0.5));    
 
-                AND_THEN("Landmark #1 associated"){
-                    REQUIRE(idx[0] == 4);
-                }
+            THEN("MeasurementPointLandmarkBundle dependency allocates the correct output sizes"){
+                MeasurementPointLandmarkBundle bundle;
+                Eigen::VectorXd h;
+                Eigen::MatrixXd SR;
+                Eigen::MatrixXd J;
+                bundle(mu, param, h, SR, J);
 
-                AND_THEN("Landmark #2 associated"){
-                    REQUIRE(idx[1] == 7);
+                REQUIRE(h.size()>0);
+                REQUIRE(h.rows()==4);
+                REQUIRE(h.cols()==1);
+
+                REQUIRE(SR.size()>0);
+                REQUIRE(SR.rows()==4);
+                REQUIRE(SR.cols()==4);
+
+                REQUIRE(J.size()>0);
+                REQUIRE(J.rows()==4);
+                REQUIRE(J.cols()==12);
+
+                THEN("Calling snn"){
+                    std::vector<int> idx;
+                    double s = snn(mu, S, y, param, idx);
+
+                    THEN("Surprisal is correct"){
+                        REQUIRE(s == Approx(22.025573025596437));
+                    }
+
+                    THEN("idx has the correct size"){
+                        REQUIRE(idx.size() == 2);
+
+                        AND_THEN("Landmark #1 associated"){
+                            REQUIRE(idx[0] == 4);
+                        }
+
+                        AND_THEN("Landmark #2 associated"){
+                            REQUIRE(idx[1] == 7);
+                        }
+                    }
                 }
             }
         }
@@ -255,23 +343,51 @@ SCENARIO("SNN: 2 landmarks, 6 features, 1 feature associated"){
         REQUIRE(param.Kc.cols == 3);
         REQUIRE(param.distCoeffs.cols == 1);
 
-        THEN("Calling snn"){
-            std::vector<int> idx;
-            double s = snn(mu, S, y, param, idx);
+        THEN("normcdf dependency has a valid output"){
+            double x    = 0;
 
-            THEN("Surprisal is correct"){
-                REQUIRE(s == Approx(25.872930498597370));
-            }
+            double f    = normcdf(x);
 
-            THEN("idx has the correct size"){
-                REQUIRE(idx.size() == 2);
+            REQUIRE(f == Approx(0.5));    
 
-                AND_THEN("Landmark #1 unassociated"){
-                    REQUIRE(idx[0] == -1);
-                }
+            THEN("MeasurementPointLandmarkBundle dependency allocates the correct output sizes"){
+                MeasurementPointLandmarkBundle bundle;
+                Eigen::VectorXd h;
+                Eigen::MatrixXd SR;
+                Eigen::MatrixXd J;
+                bundle(mu, param, h, SR, J);
 
-                AND_THEN("Landmark #2 associated"){
-                    REQUIRE(idx[1] == 4);
+                REQUIRE(h.size()>0);
+                REQUIRE(h.rows()==4);
+                REQUIRE(h.cols()==1);
+
+                REQUIRE(SR.size()>0);
+                REQUIRE(SR.rows()==4);
+                REQUIRE(SR.cols()==4);
+
+                REQUIRE(J.size()>0);
+                REQUIRE(J.rows()==4);
+                REQUIRE(J.cols()==12);
+
+                THEN("Calling snn"){
+                    std::vector<int> idx;
+                    double s = snn(mu, S, y, param, idx);
+
+                    THEN("Surprisal is correct"){
+                        REQUIRE(s == Approx(25.872930498597370));
+                    }
+
+                    THEN("idx has the correct size"){
+                        REQUIRE(idx.size() == 2);
+
+                        AND_THEN("Landmark #1 unassociated"){
+                            REQUIRE(idx[0] == -1);
+                        }
+
+                        AND_THEN("Landmark #2 associated"){
+                            REQUIRE(idx[1] == 4);
+                        }
+                    }
                 }
             }
         }
