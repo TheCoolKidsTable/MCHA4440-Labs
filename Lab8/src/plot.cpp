@@ -79,5 +79,12 @@ void plotGaussianConfidenceEllipse(cv::Mat & img, const Eigen::VectorXd & murQOi
 
     // TODO:
     // Copy some parts from plotFeatureGaussianConfidenceEllipse in Lab 7
+    cv::drawMarker(img, cv::Point(murQOi(0),murQOi(1)),cv::Scalar(color(2),color(1),color(0)),cv::MARKER_CROSS,24,2);
+    Eigen::MatrixXd x;
+    gaussianConfidenceEllipse3Sigma(murQOi,SrQOi,x);
+    for(int i = 0; i < x.cols() - 1; i++) {
+        cv::line(img, cv::Point(x(0,i),x(1,i)) ,cv::Point(x(0,i+1),x(1,i+1)),cv::Scalar(color(2),color(1),color(0)),2);
+    }
+
 }
 

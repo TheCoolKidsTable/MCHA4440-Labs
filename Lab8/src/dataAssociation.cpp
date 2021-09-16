@@ -159,9 +159,30 @@ bool individualCompatibility(const int  & i, const int &  j, const int  & ny, co
     assert(SYY.cols() == muY.rows());
 
     // TODO
+    Eigen::MatrixXd yi, muYj, SYYj, R, QR, zij, z(1,1), Syy;
 
+    muYj = muY.segment(j*ny,2);
 
-    bool cij                = false;
+    double Cj = chi2LUT[j];
+
+    Syy = SYY.block(0,j*ny,SYY.rows(),ny);
+    yi = y.block(0,i,ny, 1);
+
+    Eigen::HouseholderQR<Eigen::MatrixXd> qr(Syy);
+
+    qr.compute(Syy);
+    QR = qr.matrixQR();
+
+    R = QR.triangularView<Eigen::Upper>();
+
+    SYYj = R.topRows(ny);
+
+    zij = SYYj.transpose().triangularView<Eigen::Lower>().solve(yi - muYj);
+
+    z = zij.transpose()*zij;
+    
+
+    bool cij = z(0,0) < Cj;
     return cij;
 }
 

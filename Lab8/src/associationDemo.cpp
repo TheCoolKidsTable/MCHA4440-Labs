@@ -59,10 +59,10 @@ void runDescriptorMatcher(const Settings & s, const CameraParameters & param, bo
     Eigen::VectorXd etaA;
     assert( getPoseFromCheckerBoardImage(viewRawA, s, param, etaA));
     cv::Mat outViewA;
-    outViewA    = viewRawA.clone();
     if (doCalibrationGridInFill){
-        inFillChessBoard(etaA, param, outViewA);
+        inFillChessBoard(etaA, param, viewRawA);
     }
+    outViewA    = viewRawA.clone();
 
 
     // View B
@@ -77,10 +77,10 @@ void runDescriptorMatcher(const Settings & s, const CameraParameters & param, bo
     Eigen::VectorXd etaB;
     assert( getPoseFromCheckerBoardImage(viewRawB, s, param, etaB));
     cv::Mat outViewB;
-    outViewB    = viewRawB.clone();
     if (doCalibrationGridInFill){
-        inFillChessBoard(etaB, param, outViewB);
+        inFillChessBoard(etaB, param, viewRawB);
     }
+    outViewB    = viewRawB.clone();
 
     // Initialise ORB detector
     // https://docs.opencv.org/3.4/db/d95/classcv_1_1ORB.html
@@ -94,9 +94,9 @@ void runDescriptorMatcher(const Settings & s, const CameraParameters & param, bo
         maxNumFeatures,         // nfeatures
         1.2f,                   // scaleFactor
         8,                      // nlevels
-        31,                     // edgeThreshold
+        10,                     // edgeThreshold
         0,                      // firstLevel
-        2,                      // WTA_K
+        2,                          // WTA_K
         cv::ORB::HARRIS_SCORE,  // scoreType
         31,                     // patchSize
         20                      // fastThreshold 
@@ -111,8 +111,8 @@ void runDescriptorMatcher(const Settings & s, const CameraParameters & param, bo
     cv::Mat descriptorsB;
 
     // Detect the position of the Oriented FAST corner point.
-    orb->detect(outViewA, keypointsA);
-    orb->detect(outViewB, keypointsB);
+    orb->detect(viewRawA, keypointsA);
+    orb->detect(viewRawB, keypointsB);
 
     // Calculate the BRIEF descriptor according to the position of the corner point
     orb->compute(outViewA, keypointsA, descriptorsA);
@@ -299,30 +299,69 @@ void runCompatibleDescriptorMatcher(const Settings & s, const CameraParameters &
     std::vector<cv::KeyPoint> keypointsB;
     int maxNumFeatures = 5000;
 
+    // Initialise ORB
+    // Detect keypoints in both frames
+    // Find descriptors in both frames
+    cv::Ptr<cv::ORB> orb = cv::ORB::create(
+        maxNumFeatures,         // nfeatures
+        1.2f,                   // scaleFactor
+        8,                      // nlevels
+        31,                     // edgeThreshold
+        0,                      // firstLevel
+        2,                          // WTA_K
+        cv::ORB::HARRIS_SCORE,  // scoreType
+        31,                     // patchSize
+        20                      // fastThreshold 
+    );
 
-    // ------------------------------------------------------------------------
-    // Brute force matcher
-    // ------------------------------------------------------------------------
-    // TODO
+
+    // Detect the position of the Oriented FAST corner point.
+    orb->detect(viewRawB, keypointsB);
+
+    // Calculate the BRIEF descriptor according to the position of the corner point
+    orb->compute(viewRawB, keypointsB, descriptorsB);
+
+    // Run Brute force matcher
+    cv::BFMatcher matcher = cv::BFMatcher(cv::NORM_HAMMING);
+    std::vector<cv::DMatch> matches;
+    matcher.match(descriptorsA,descriptorsB,matches);
+    //Sort by distance 
+    std::cout << "Keypoints A Size: " << keypointsA.size() << std::endl;
+    std::cout << "Keypoints B Size: " << keypointsB.size() << std::endl;
+    std::cout << "Matches Size: " << matches.size() << std::endl;
+    std::cout << "First 10 match distance:" << std::endl;
+    for(int i = 0; i < 10; i++) {
+        std::cout << i << matches[i].distance << ",";   
+    }
+    std::cout<< "" << std::endl;
+
+    // ...
 
 
-    // TODO: Store match associations
+    //TODO: Store match associations
     Eigen::MatrixXd y;
+    y.resize(2,matches.size());
+    for(int i =0; i < matches.size(); i++) {
+        std::cout << "matches train idx: " << matches[i].trainIdx << std::endl;
+        std::cout << "matches query idx: " << matches[i].queryIdx << std::endl;
+        std::cout << "matches img idx: " << matches[i].imgIdx << std::endl;
+        y(0,i) = keypointsB[matches[i].trainIdx].pt.x;
+        y(1,i) = keypointsB[matches[i].trainIdx].pt.y;
+    }
 
-    // ----------------------------------------------------------------
+    std::cout << "y: " << y << std::endl;
+    // ---------------------------------------------------------------
     // Draw matches without compatibility check
     // ----------------------------------------------------------------
     // TODO
 
-
-
-
-
-
-    // ------------------------------------------------------------------------
-    // Generate chi2LUT
-    // ------------------------------------------------------------------------
-    double nstd     = 3;
+    // Display results with drawMatches
+    cv::Mat imgout;   
+    cv::drawMatches(outViewA,keypointsA,outViewB,keypointsB,matches,imgout);              
+    cv::namedWindow("Matches", cv::WINDOW_NORMAL);
+    cv::resizeWindow("Matches", 960, 540); 
+    cv::imshow("Matches",imgout);
+    int wait = cv::waitKey(0);
 
     // Probability mass enclosed by nstd standard deviations
     // TODO
@@ -331,10 +370,18 @@ void runCompatibleDescriptorMatcher(const Settings & s, const CameraParameters &
     std::cout << std::endl;
     std::cout << "Generate chi2inv look up table" << std::endl;
 
-    // chi2inv LUT
-    std::vector<double> chi2LUT;
-    // TODO
 
+    // ------------------------------------------------------------------------
+    // Generate chi2LUT
+    // ------------------------------------------------------------------------
+    double nstd     = 3;
+    std::vector<double> chi2LUT;
+    std::cout << "chi2LUT: " << std::endl;
+    c = 2*normcdf(3) - 1;
+    for(int i=0; i < y.cols(); i++) {
+            chi2LUT.push_back(chi2inv(c, (i+1)*2));
+            std::cout << chi2LUT[i] << ",";
+    }
 
     // Form landmark bundle
     // ----------------------------------------------------------------
@@ -353,6 +400,7 @@ void runCompatibleDescriptorMatcher(const Settings & s, const CameraParameters &
     Eigen::VectorXd muY;
     Eigen::MatrixXd SYY;
 
+
     // TODO
     // 
 
@@ -361,16 +409,28 @@ void runCompatibleDescriptorMatcher(const Settings & s, const CameraParameters &
     // ----------------------------------------------------------------
     std::cout << std::endl;
     std::cout << "Check compatibility" << std::endl;
+
+    affineTransform(mu,S,h,muY,SYY);
     
     std::vector<char> isCompatible;
     // TODO
-
+    for(int i = 0; i < matches.size(); i++) {
+        bool res = individualCompatibility(i,i,2,y,muY,SYY,chi2LUT);
+        isCompatible.push_back(res);
+        if(res){
+            std::cout << "Pixel at [" << y(0,i) << "," << y(1,i) << " ] in Image B, matches with landmark " << i << "." <<std::endl;
+        }
+    }
 
 
     // ----------------------------------------------------------------
     // Draw matches with compatibility check
     // ----------------------------------------------------------------
-    
+    cv::drawMatches(outViewA,keypointsA,outViewB,keypointsB,matches,imgout,cv::Scalar::all(-1),cv::Scalar::all(-1),isCompatible);              
+    cv::namedWindow("Matches", cv::WINDOW_NORMAL);
+    cv::resizeWindow("Matches", 960, 540); 
+    cv::imshow("Matches",imgout);
+    wait = cv::waitKey(0);
     // TODO
 
     cv::waitKey(0);
@@ -525,7 +585,7 @@ void runGeometricMatcher(const Settings & s, const CameraParameters & param, boo
     std::cout << "Detect Harris corners" << std::endl;
     std::vector<TextureFeature>  features;
     // TODO
-
+    detectHarris(viewRawB,maxNumFeatures,features);
 
     // ------------------------------------------------------------------------
     // Populate keypointsB and measurement set y with elements of the features vector
@@ -535,17 +595,24 @@ void runGeometricMatcher(const Settings & s, const CameraParameters & param, boo
     int m   = features.size();
     Eigen::MatrixXd y(2, m);
     // TODO
+    for(int i = 0; i < m;i++) {
+        cv::KeyPoint temp;
+        temp.pt.x = features[i].x;
+        temp.pt.y = features[i].y;
+        keypointsB.push_back(temp);
+        y(0,i) = features[i].x; 
+        y(1,i) = features[i].y;
+    }
 
-    
-
+    cv::Mat output_image;
     // ------------------------------------------------------------------------
     // Run surprisal nearest neighbours
     // ------------------------------------------------------------------------
 
     std::cout << "Run surprisal nearest neighbours." << std::endl;
     // TODO
-    
-
+    std::vector<int> idx;
+    snn(mu,S,y,param,idx,false);
 
     // ------------------------------------------------------------------------
     // Populate matches and isCompatible vectors for drawMatches
@@ -554,14 +621,39 @@ void runGeometricMatcher(const Settings & s, const CameraParameters & param, boo
     std::vector< cv::DMatch > matches;
     std::vector<char>isCompatible;
     // TODO
+    for(int j = 0; j < idx.size(); j++){
+        cv::DMatch temp;
+        int i = idx[j];
+        bool isMatch = i >= 0;
+        temp.queryIdx = j;
+        temp.trainIdx = i;
+
+        matches.push_back(temp);
+        isCompatible.push_back(isMatch);
+        if(isMatch){
+            std::cout << "Pixel " << i << " in y located at [ " << y(0,i) << "," << y(1,i) << "] in imageB, matches with landmark " << j << "." << std::endl;
+        } else {
+            std::cout << "No pixel association with landmark " << j << "." << std::endl;
+        }
+    }
+
+    std::cout << "Keypoints A Size: " << keypointsA.size() << std::endl;
+    std::cout << "Keypoints B Size: " << keypointsB.size() << std::endl;
+    std::cout << "Matches Size: " << matches.size() << std::endl;
     
 
     // ------------------------------------------------------------------------
     // Call drawMatches
     // ------------------------------------------------------------------------
-    cv::Mat output_image;
+
 
     // TODO
+
+    cv::drawMatches(outViewA,keypointsA,outViewB,keypointsB,matches,output_image,cv::Scalar::all(-1),cv::Scalar::all(-1),isCompatible);              
+    cv::namedWindow("Matches", cv::WINDOW_NORMAL);
+    cv::resizeWindow("Matches", 960, 540); 
+    cv::imshow("Matches",output_image);
+    int wait = cv::waitKey(0);
 
     cv::waitKey(0);
 

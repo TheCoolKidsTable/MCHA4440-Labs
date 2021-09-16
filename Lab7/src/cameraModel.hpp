@@ -7,7 +7,7 @@
 #include <opencv2/calib3d.hpp>
 
 #include "rotation.hpp"
-// #include "settings.h"
+#include "settings.h"
 
 struct CameraParameters{
     cv::Mat Kc;                 // Camera Matrix
@@ -28,13 +28,13 @@ struct CameraParameters{
 // 
 // ---------------------------------------------------------------------
 
-// bool detectChessBoard(const Settings & s, const cv::Mat & view, std::vector<cv::Point2f> & rQOi);
-// void calibrateCameraFromImageSet(const Settings & s, CameraParameters & param);
-// void exportCalibrationData(const std::filesystem::path & calibrationFilePath, const CameraParameters & param);
-// void importCalibrationData(const std::filesystem::path & calibrationFilePath, CameraParameters & param);
-// bool getPoseFromCheckerBoardImage(const cv::Mat & view, const Settings & s, const CameraParameters & param, Eigen::VectorXd & eta);
-// void runCalibration(const Settings & s, const std::vector<std::vector<cv::Point2f>> & rQOi_set,  const cv::Size & imageSize, CameraParameters & param);
-// void showCalibrationDataVTK(const Settings & s, const CameraParameters & param);
+bool detectChessBoard(const Settings & s, const cv::Mat & view, std::vector<cv::Point2f> & rQOi);
+void calibrateCameraFromImageSet(const Settings & s, CameraParameters & param);
+void exportCalibrationData(const std::filesystem::path & calibrationFilePath, const CameraParameters & param);
+void importCalibrationData(const std::filesystem::path & calibrationFilePath, CameraParameters & param);
+bool getPoseFromCheckerBoardImage(const cv::Mat & view, const Settings & s, const CameraParameters & param, Eigen::VectorXd & eta);
+void runCalibration(const Settings & s, const std::vector<std::vector<cv::Point2f>> & rQOi_set,  const cv::Size & imageSize, CameraParameters & param);
+void showCalibrationDataVTK(const Settings & s, const CameraParameters & param);
 
 // ---------------------------------------------------------------------
 // 

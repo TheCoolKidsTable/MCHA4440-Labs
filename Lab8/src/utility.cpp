@@ -14,7 +14,7 @@ double chi2inv(double p, double nu){
     assert(p>=0);
     assert(p<1);
     // TODO
-    return 2*boost::math::gamma_q_inv(nu/2,p);
+    return 2.0*boost::math::gamma_p_inv(nu/2.0,p);
 
 }
 
