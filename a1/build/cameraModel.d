@@ -232,7 +232,7 @@ build/cameraModel.o: src/cameraModel.cpp \
  C:/msys64/mingw64/include/opencv4/opencv2/videoio.hpp \
  C:/msys64/mingw64/include/opencv4/opencv2/imgproc/imgproc.hpp \
  C:/msys64/mingw64/include/opencv4/opencv2/imgproc.hpp \
- src/cameraModel.hpp src/rotation.hpp src/gaussian.hpp \
+ src/cameraModel.hpp src/rotation.hpp src/settings.h src/gaussian.hpp \
  C:/msys64/mingw64/include/eigen3/Eigen/QR \
  C:/msys64/mingw64/include/eigen3/Eigen/Core \
  C:/msys64/mingw64/include/eigen3/Eigen/Cholesky \

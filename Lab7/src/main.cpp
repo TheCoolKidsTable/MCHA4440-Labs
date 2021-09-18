@@ -44,7 +44,8 @@ int main(int argc, char* argv [])
         return -1;
     }
     Settings s;
-    const std::string inputSettingsFile = parser.get<std::string>("@settings");
+    std::filesystem::path inputSettingsFile = "data/settings.xml";
+
 
     if (!std::filesystem::exists(inputSettingsFile)){
         std::cout << "No file on path: " << inputSettingsFile << std::endl << std::endl;
@@ -75,7 +76,7 @@ int main(int argc, char* argv [])
 
 
     CameraParameters param;
-    std::filesystem::path calibrationFilePath = "data/gopro/camera.xml";
+    std::filesystem::path calibrationFilePath = "data/camera.xml";
     if (doCalibrate){
         std::cout << "Calibrating camera. " << std::endl;
         calibrateCameraFromImageSet(s, param);

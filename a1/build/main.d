@@ -25,8 +25,8 @@ build/main.o: src/main.cpp \
  C:/msys64/mingw64/include/opencv4/opencv2/core/utility.hpp \
  C:/msys64/mingw64/include/opencv4/opencv2/core/optim.hpp \
  C:/msys64/mingw64/include/opencv4/opencv2/core/ovx.hpp \
- C:/msys64/mingw64/include/opencv4/opencv2/core/cvdef.h src/calibrate.h \
- C:/msys64/mingw64/include/eigen3/Eigen/Core \
+ C:/msys64/mingw64/include/opencv4/opencv2/core/cvdef.h src/settings.h \
+ src/cameraModel.hpp C:/msys64/mingw64/include/eigen3/Eigen/Core \
  C:/msys64/mingw64/include/eigen3/Eigen/src/Core/util/DisableStupidWarnings.h \
  C:/msys64/mingw64/include/eigen3/Eigen/src/Core/util/Macros.h \
  C:/msys64/mingw64/include/eigen3/Eigen/src/Core/util/MKL_support.h \
@@ -149,6 +149,7 @@ build/main.o: src/main.cpp \
  C:/msys64/mingw64/include/opencv4/opencv2/flann/defines.h \
  C:/msys64/mingw64/include/opencv4/opencv2/flann/config.h \
  C:/msys64/mingw64/include/opencv4/opencv2/core/affine.hpp \
+ src/rotation.hpp src/SLAM.h \
  C:/msys64/mingw64/include/opencv4/opencv2/core/eigen.hpp \
  C:/msys64/mingw64/include/eigen3/unsupported/Eigen/CXX11/Tensor \
  C:/msys64/mingw64/include/eigen3/Eigen/Core \
@@ -231,4 +232,35 @@ build/main.o: src/main.cpp \
  C:/msys64/mingw64/include/opencv4/opencv2/imgcodecs.hpp \
  C:/msys64/mingw64/include/opencv4/opencv2/videoio.hpp \
  C:/msys64/mingw64/include/opencv4/opencv2/imgproc/imgproc.hpp \
- C:/msys64/mingw64/include/opencv4/opencv2/imgproc.hpp src/SLAM.h
+ C:/msys64/mingw64/include/opencv4/opencv2/imgproc.hpp \
+ C:/msys64/mingw64/include/vtk-8.2/vtkRenderWindowInteractor.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkRenderingCoreModule.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkObject.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCommonCoreModule.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkObjectBase.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkIndent.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkSystemIncludes.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkWin32Header.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkConfigure.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkVersionMacros.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkABI.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkIOStream.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkType.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtk_kwiml.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkkwiml/abi.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkkwiml/int.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkkwiml/abi.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkWrappingHints.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkOStreamWrapper.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkOStrStreamWrapper.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAtomicTypes.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAtomic.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAtomicTypeConcepts.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkSetGet.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkTimeStamp.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkWeakPointerBase.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCommand.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkInteractorStyleTrackballCamera.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkInteractionStyleModule.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkInteractorStyle.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkInteractorObserver.h

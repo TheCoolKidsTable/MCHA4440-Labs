@@ -5,7 +5,8 @@
 #include <iostream>
 #include <opencv2/core.hpp>
 
-#include "calibrate.h"
+#include "settings.h"
+#include "cameraModel.hpp"
 #include "SLAM.h"
 
 int main(int argc, char* argv [])
@@ -17,7 +18,8 @@ int main(int argc, char* argv [])
         "{calibrate c     |          | perform camera calibration from input video}"
         "{scenario slam s | 2        | run SLAM on input video with scenario type (1:tags, 2:points, 3:ducks)}"
         "{interactive i   | 0        | interactivity (0:none, 1:last frame, 2:all frames)}"
-        "{export e        |          | export video during SLAM}";
+        "{export e        |          | export video during SLAM}"
+        ;
 
     cv::CommandLineParser parser(argc, argv, keys);
     parser.about("MCHA4400 Assignment 1");
@@ -57,20 +59,46 @@ int main(int argc, char* argv [])
         std::cout << "Output directory set to " << outputDirectory.string() << std::endl;
     }
 
+    // ------------------------------------------------------------
+    // Read settings
+    // ------------------------------------------------------------
+    Settings s;
+    std::filesystem::path inputSettingsFile = "data/settings.xml";
+
+    if (!std::filesystem::exists(inputSettingsFile)){
+        std::cout << "No file on path: " << inputSettingsFile << std::endl << std::endl;
+        parser.printMessage();
+        return -1;
+    }
+
+    cv::FileStorage fs(inputSettingsFile.string(), cv::FileStorage::READ); // Read the settings
+    if (!fs.isOpened())
+    {
+        std::cout << "Could not open the configuration file: \"" << inputSettingsFile << "\"" << std::endl << std::endl;
+        parser.printMessage();
+        return -1;
+    }
+    fs["Settings"] >> s;
+    fs.release();
+
     std::filesystem::path appPath = parser.getPathToApplication();
     std::filesystem::path dataFile = appPath / ".." / "data" / "camera.xml";
+    std::filesystem::path calibrationFilePath = "data/camera.xml";
+    CameraParameters param;
     if (hasCalibrate)
     {
         std::cout << "Calibrating camera" << std::endl;
-        calibrateCameraFromVideo(inputVideoPath, dataFile);
+        calibrateCameraFromVideo(inputVideoPath, dataFile, s);
     }
     else
     {
         assert(1 <= scenario && scenario <= 3);
         assert(0 <= interactive && interactive <= 2);
         std::cout << "Running SLAM" << std::endl;
-        runSLAMFromVideo(inputVideoPath, dataFile, scenario, interactive, outputDirectory);
+        importCalibrationData(calibrationFilePath, param);
+        runSLAMFromVideo(inputVideoPath, dataFile, param, s, scenario, interactive, outputDirectory);
     }
+
 
     return EXIT_SUCCESS;
 }

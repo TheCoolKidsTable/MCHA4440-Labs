@@ -264,10 +264,14 @@ void quadricPlot_update(QuadricPlot & qp, const Eigen::VectorXd & murPNn, const 
     Eigen::MatrixXd Q;
     bounds_calculateMaxMinSigmaPoints(qp.bounds, murPNn, SrPNn, 6);
 
+
+
     // ---------------------------------------------------
     // TODO
     // ---------------------------------------------------
     double a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
+
+    std::cout << "Here" << std::endl;
 
     gaussianConfidenceQuadric3Sigma(murPNn,SrPNn,Q);
     
@@ -606,10 +610,11 @@ void initPlotStates(const Eigen::VectorXd & mu, const Eigen::MatrixXd & S, const
     assert(S.rows() == nx_all);
     assert(S.cols() == nx_all);
 
-    int nx      = 6;                    // Number of camera states
-    assert( (nx_all - nx)>0);           // Check that there are features in the scene
-    assert( (nx_all - nx)% 3 == 0);     // Check that the dimension for features is correct
-    int nr      = (nx_all - nx)/3;      // Number of features
+    int nx      = 12;                    // Number of camera states
+    // assert( (nx_all - nx)>0);           // Check that there are features in the scene
+    assert( (nx_all - nx)% 6 == 0);     // Check that the dimension for features is correct
+    int nr      = (nx_all - nx)/6;      // Number of features
+    std::cout << "nr " << nr << std::endl;
 
     double aspectRatio  = (1.0*param.imageSize.width)/param.imageSize.height;
 
@@ -664,11 +669,10 @@ void updatePlotStates(const cv::Mat & view, const Eigen::VectorXd & mu, const Ei
     assert(S.rows() == nx_all);
     assert(S.cols() == nx_all);
 
-    int nx      = 6;                    // Number of camera state   s
-    assert( (nx_all - nx)>0);           // Check that there are features in the scene
-    assert( (nx_all - nx)% 3 == 0);     // Check that the dimension for features is correct
-    int nr      = (nx_all - nx)/3;      // Number of features
-
+    int nx      = 12;                    // Number of camera state   s
+    // assert( (nx_all - nx)>0);           // Check that there are features in the scene
+    assert( (nx_all - nx)% 6 == 0);     // Check that the dimension for features is correct
+    int nr      = (nx_all - nx)/6 ;      // Number of features
     Eigen::VectorXd eta    = mu.head(6);
 
     Eigen::VectorXd rCNn    = eta.head(3);
@@ -691,10 +695,13 @@ void updatePlotStates(const cv::Mat & view, const Eigen::VectorXd & mu, const Ei
 
     // ---------------------------------------------------
     // 
-
-
     double r,g,b;   
     hsv2rgb(330, 1., 1., r, g, b);
+    std::cout << "murCNn " << murCNn << std::endl;
+    std::cout << "murCNn rows" << murCNn.rows() << std::endl;
+    std::cout << "SrCNn" << SrCNn << std::endl;
+    std::cout << "SrCNn rows" << SrCNn.rows() << std::endl;
+    std::cout << "SrCNn cols" << SrCNn.cols() << std::endl;
     quadricPlot_update(handles.qp_camera, murCNn, SrCNn);
     quadricPlot_getActor(handles.qp_camera)->GetProperty()->SetOpacity(0.1);
     quadricPlot_getActor(handles.qp_camera)->GetProperty()->SetColor(r,g,b);
@@ -723,8 +730,8 @@ void updatePlotStates(const cv::Mat & view, const Eigen::VectorXd & mu, const Ei
         // ---------------------------------------------------
 
         // Calculate marginal distribution for feature positions
-        murPNn = mu.segment(6+i*3,3);
-        Eigen::HouseholderQR<Eigen::MatrixXd> qr(S.middleCols(6+i*3,3));
+        murPNn = mu.segment(nx+i*6,3);
+        Eigen::HouseholderQR<Eigen::MatrixXd> qr(S.middleCols(nx+i*6,3));
         SrPNn = Eigen::MatrixXd(qr.matrixQR().triangularView<Eigen::Upper>()).block(0,0,3,3);
         // ---------------------------------------------------
         // 
@@ -746,6 +753,8 @@ void updatePlotStates(const cv::Mat & view, const Eigen::VectorXd & mu, const Ei
         bounds_setExtremity(qp.bounds, globalBounds); 
 
     }
+
+
 
     axisPlot_update     (handles.ap, globalBounds);
     basisPlot_update    (handles.bp, eta);
@@ -790,18 +799,16 @@ void plotFeatureGaussianConfidenceEllipse(cv::Mat & img, const Eigen::VectorXd &
     Eigen::VectorXd rQOi;
     cv::Point point;
     int flag = worldToPixel(murPNn, eta, param, rQOi);
+    std::cout << "flag " << flag << std::endl;
     if(flag == 0) {
         cv::drawMarker(img, cv::Point(rQOi(0),rQOi(1)),cv::Scalar(color(2),color(1),color(0)),cv::MARKER_CROSS,24,2);
         affineTransform(murPNn, SrPNn, h, muimage, Skimage);
         Eigen::MatrixXd x;
         gaussianConfidenceEllipse3Sigma(muimage,Skimage,x);
-        std::cout<< "x " << x << std::endl;
-        std::cout<< "x rows" << x.rows() << std::endl;
-        std::cout<< "x cols" << x.cols() << std::endl;
         for(int i = 0; i < x.cols() - 1; i++) {
-            // if(worldToPixel() == 0 && worldToPixel() == 0) {
+            if(x(0,i) > 0 && x(1,i) > 0 && x(0,i+1) > 0 && x(1,i+1) > 0 && x(0,i) < 1920 && x(1,i) < 1920 && x(0,i+1) < 1920 && x(1,i+1) < 1920) {
                 cv::line(img, cv::Point(x(0,i),x(1,i)) ,cv::Point(x(0,i+1),x(1,i+1)),cv::Scalar(color(2),color(1),color(0)),2);
-            // }
+            }
         }
     }
 

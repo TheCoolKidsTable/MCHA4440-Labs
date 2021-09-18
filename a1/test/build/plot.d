@@ -1,5 +1,5 @@
-build/SLAM.o: src/SLAM.cpp src/SLAM.h \
- C:/msys64/mingw64/include/eigen3/Eigen/Core \
+test/build/plot.o: test/src/plot.cpp test/src/../../src/calibrate.h \
+ test/src/../../src/plot.h C:/msys64/mingw64/include/eigen3/Eigen/Core \
  C:/msys64/mingw64/include/eigen3/Eigen/src/Core/util/DisableStupidWarnings.h \
  C:/msys64/mingw64/include/eigen3/Eigen/src/Core/util/Macros.h \
  C:/msys64/mingw64/include/eigen3/Eigen/src/Core/util/MKL_support.h \
@@ -143,6 +143,126 @@ build/SLAM.o: src/SLAM.cpp src/SLAM.h \
  C:/msys64/mingw64/include/opencv4/opencv2/core/optim.hpp \
  C:/msys64/mingw64/include/opencv4/opencv2/core/ovx.hpp \
  C:/msys64/mingw64/include/opencv4/opencv2/core/cvdef.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkActor.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkRenderingCoreModule.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkProp3D.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkProp.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkObject.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCommonCoreModule.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkObjectBase.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkIndent.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkSystemIncludes.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkWin32Header.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkConfigure.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkVersionMacros.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkABI.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkIOStream.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkType.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtk_kwiml.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkkwiml/abi.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkkwiml/int.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkkwiml/abi.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkWrappingHints.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkOStreamWrapper.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkOStrStreamWrapper.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAtomicTypes.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAtomic.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAtomicTypeConcepts.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkSetGet.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkTimeStamp.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkWeakPointerBase.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkActor2D.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCoordinate.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCellArray.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCommonDataModelModule.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkIdTypeArray.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkDataArray.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAbstractArray.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkVariant.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkStdString.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkUnicodeString.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkVariantInlineOperators.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAOSDataArrayTemplate.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkGenericDataArray.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkSmartPointer.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkSmartPointerBase.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkNew.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkTypeTraits.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkGenericDataArrayLookupHelper.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkIdList.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkGenericDataArray.txx \
+ C:/msys64/mingw64/include/vtk-8.2/vtkMath.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkMathConfigure.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkVariantCast.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkBuffer.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkObjectFactory.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkDebugLeaksManager.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCell.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCellType.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkColor.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkTuple.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkContourFilter.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkFiltersCoreModule.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkPolyDataAlgorithm.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCommonExecutionModelModule.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAlgorithm.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkPolyData.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkPointSet.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkDataSet.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkDataObject.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkPoints.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCellTypes.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkIntArray.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkUnsignedCharArray.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCellLinks.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAbstractCellLinks.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCellArray.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkContourValues.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCommonMiscModule.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCubeAxesActor.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkRenderingAnnotationModule.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkActor.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkDataSetMapper.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkMapper.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAbstractMapper3D.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkAbstractMapper.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkImageData.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkStructuredData.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkImageMapper.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkMapper2D.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkLine.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkPoints.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkPolyData.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkPolyDataMapper.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkPyramid.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCell3D.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkQuadric.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkImplicitFunction.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkRenderer.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkViewport.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkVolumeCollection.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkPropCollection.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCollection.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkVolume.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkActorCollection.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkRenderWindow.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkWindow.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkSampleFunction.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkImagingHybridModule.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkImageAlgorithm.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkSmartPointer.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkUnsignedCharArray.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkUnstructuredGrid.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkUnstructuredGridBase.h \
+ test/src/../../src/cameraModel.hpp \
+ C:/msys64/mingw64/include/opencv4/opencv2/calib3d.hpp \
+ C:/msys64/mingw64/include/opencv4/opencv2/features2d.hpp \
+ C:/msys64/mingw64/include/opencv4/opencv2/flann/miniflann.hpp \
+ C:/msys64/mingw64/include/opencv4/opencv2/flann/defines.h \
+ C:/msys64/mingw64/include/opencv4/opencv2/flann/config.h \
+ C:/msys64/mingw64/include/opencv4/opencv2/core/affine.hpp \
+ test/src/../../src/rotation.hpp test/src/../../src/settings.h \
+ test/src/../../src/utility.h \
  C:/msys64/mingw64/include/opencv4/opencv2/core/eigen.hpp \
  C:/msys64/mingw64/include/eigen3/unsupported/Eigen/CXX11/Tensor \
  C:/msys64/mingw64/include/eigen3/Eigen/Core \
@@ -226,130 +346,9 @@ build/SLAM.o: src/SLAM.cpp src/SLAM.h \
  C:/msys64/mingw64/include/opencv4/opencv2/videoio.hpp \
  C:/msys64/mingw64/include/opencv4/opencv2/imgproc/imgproc.hpp \
  C:/msys64/mingw64/include/opencv4/opencv2/imgproc.hpp \
- C:/msys64/mingw64/include/vtk-8.2/vtkRenderWindowInteractor.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkRenderingCoreModule.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkObject.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCommonCoreModule.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkObjectBase.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkIndent.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkSystemIncludes.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkWin32Header.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkConfigure.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkVersionMacros.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkABI.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkIOStream.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkType.h \
- C:/msys64/mingw64/include/vtk-8.2/vtk_kwiml.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkkwiml/abi.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkkwiml/int.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkkwiml/abi.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkWrappingHints.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkOStreamWrapper.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkOStrStreamWrapper.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkAtomicTypes.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkAtomic.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkAtomicTypeConcepts.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkSetGet.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkTimeStamp.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkWeakPointerBase.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCommand.h \
  C:/msys64/mingw64/include/vtk-8.2/vtkInteractorStyleTrackballCamera.h \
  C:/msys64/mingw64/include/vtk-8.2/vtkInteractionStyleModule.h \
  C:/msys64/mingw64/include/vtk-8.2/vtkInteractorStyle.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkInteractorObserver.h src/settings.h \
- src/cameraModel.hpp \
- C:/msys64/mingw64/include/opencv4/opencv2/calib3d.hpp \
- C:/msys64/mingw64/include/opencv4/opencv2/features2d.hpp \
- C:/msys64/mingw64/include/opencv4/opencv2/flann/miniflann.hpp \
- C:/msys64/mingw64/include/opencv4/opencv2/flann/defines.h \
- C:/msys64/mingw64/include/opencv4/opencv2/flann/config.h \
- C:/msys64/mingw64/include/opencv4/opencv2/core/affine.hpp \
- src/rotation.hpp src/model.h src/imagefeatures.h \
- C:/msys64/mingw64/include/opencv4/opencv2/aruco.hpp \
- C:/msys64/mingw64/include/opencv4/opencv2/aruco/dictionary.hpp \
- src/plot.h C:/msys64/mingw64/include/vtk-8.2/vtkActor.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkProp3D.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkProp.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkActor2D.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCoordinate.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCellArray.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCommonDataModelModule.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkIdTypeArray.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkDataArray.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkAbstractArray.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkVariant.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkStdString.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkUnicodeString.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkVariantInlineOperators.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkAOSDataArrayTemplate.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkGenericDataArray.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkSmartPointer.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkSmartPointerBase.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkNew.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkTypeTraits.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkGenericDataArrayLookupHelper.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkIdList.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkGenericDataArray.txx \
- C:/msys64/mingw64/include/vtk-8.2/vtkMath.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkMathConfigure.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkVariantCast.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkBuffer.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkObjectFactory.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkDebugLeaksManager.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCell.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCellType.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkColor.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkTuple.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkContourFilter.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkFiltersCoreModule.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkPolyDataAlgorithm.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCommonExecutionModelModule.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkAlgorithm.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkPolyData.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkPointSet.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkDataSet.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkDataObject.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkPoints.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCellTypes.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkIntArray.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkUnsignedCharArray.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCellLinks.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkAbstractCellLinks.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCellArray.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkContourValues.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCommonMiscModule.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCubeAxesActor.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkRenderingAnnotationModule.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkActor.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkDataSetMapper.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkMapper.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkAbstractMapper3D.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkAbstractMapper.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkImageData.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkStructuredData.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkImageMapper.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkMapper2D.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkLine.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkPoints.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkPolyData.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkPolyDataMapper.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkPyramid.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCell3D.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkQuadric.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkImplicitFunction.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkRenderer.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkViewport.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkVolumeCollection.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkPropCollection.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkCollection.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkVolume.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkActorCollection.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkRenderWindow.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkWindow.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkSampleFunction.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkImagingHybridModule.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkImageAlgorithm.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkSmartPointer.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkUnsignedCharArray.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkUnstructuredGrid.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkUnstructuredGridBase.h
+ C:/msys64/mingw64/include/vtk-8.2/vtkInteractorObserver.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkRenderWindowInteractor.h \
+ C:/msys64/mingw64/include/vtk-8.2/vtkCommand.h

@@ -421,5 +421,5 @@ build/plot.o: src/plot.cpp C:/msys64/mingw64/include/eigen3/Eigen/Core \
  C:/msys64/mingw64/include/vtk-8.2/vtkUnstructuredGridBase.h \
  C:/msys64/mingw64/include/vtk-8.2/vtkWindowToImageFilter.h \
  C:/msys64/mingw64/include/vtk-8.2/vtkImageData.h src/cameraModel.hpp \
- src/rotation.hpp src/gaussian.hpp src/plot.h \
+ src/rotation.hpp src/settings.h src/gaussian.hpp src/plot.h \
  C:/msys64/mingw64/include/vtk-8.2/vtkActor2D.h src/utility.h
