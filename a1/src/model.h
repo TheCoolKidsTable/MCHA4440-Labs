@@ -5,18 +5,23 @@
 
 #include "imagefeatures.h"
 
+struct SlamParameters
+{
+
+};
+
 struct SlamProcessModel
 {
-    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, Eigen::VectorXd & f);
-    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, Eigen::VectorXd & f, Eigen::MatrixXd & SQ);
-    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, Eigen::VectorXd & f, Eigen::MatrixXd & SQ, Eigen::MatrixXd & dfdx);
+    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, const SlamParameters & param, Eigen::VectorXd & f);
+    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, const SlamParameters & param, Eigen::VectorXd & f, Eigen::MatrixXd & SQ);
+    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, const SlamParameters & param, Eigen::VectorXd & f, Eigen::MatrixXd & SQ, Eigen::MatrixXd & dfdx);
 };
 
 struct SlamMeasurementModel
 {
-    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, Eigen::VectorXd & h, std::vector<Marker> & detected_markers);
-    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, Eigen::VectorXd & h, std::vector<Marker> & detected_markers, Eigen::MatrixXd & SR);
-    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, Eigen::VectorXd & h, std::vector<Marker> & detected_markers, Eigen::MatrixXd & SR, Eigen::MatrixXd & dhdx);
+    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, const SlamParameters & param, Eigen::VectorXd & h);
+    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, const SlamParameters & param, Eigen::VectorXd & h, Eigen::MatrixXd & SR);
+    void operator()(const Eigen::VectorXd & x, const Eigen::VectorXd & u, const SlamParameters & param, Eigen::VectorXd & h, Eigen::MatrixXd & SR, Eigen::MatrixXd & dhdx);
 };
 
 

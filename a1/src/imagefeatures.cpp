@@ -165,6 +165,7 @@ int detectAndDrawArUco(cv::Mat img, cv::Mat & imgout, std::vector<Marker> & dete
         Eigen::MatrixXd rMCc(3,1);
         //Convert to eigen type
         cv::cv2eigen(Rcv,R);
+        //Convert to euler angles
         cv::cv2eigen(tvecs[i], rMCc);
         Marker temp = {markerIds[i],markerCorners[i],rMCc,R};
         detected_markers.push_back(temp);
@@ -184,6 +185,11 @@ int detectAndDrawArUco(cv::Mat img, cv::Mat & imgout, std::vector<Marker> & dete
     // const char* detected_markers = ;
     imgout = img;
     cv::aruco::drawDetectedMarkers(imgout, markerCorners, markerIds);
+    for (int i = 0; i < rvecs.size(); ++i) {
+        auto rvec = rvecs[i];
+        auto tvec = tvecs[i];
+        cv::aruco::drawAxis(imgout, param.Kc, param.distCoeffs, rvec, tvec, 0.1);
+    }
     // cv::imshow("Corners detected", imgout);
     // int wait = cv::waitKey(1);
     return 0;

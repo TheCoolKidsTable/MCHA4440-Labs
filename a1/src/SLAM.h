@@ -18,6 +18,9 @@
 
 #include "settings.h"
 #include "cameraModel.hpp"
+#include "rotation.hpp"
+#include "gaussian.hpp"
+
 
 void runSLAMFromVideo(const std::filesystem::path &videoPath, const std::filesystem::path &cameraDataPath, const CameraParameters & param, Settings& s, int scenario, int interactive, const std::filesystem::path &outputDirectory);
 #endif

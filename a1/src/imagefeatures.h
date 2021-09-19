@@ -8,7 +8,7 @@ struct Marker {
     int id;
     std::vector<cv::Point2f> corners;
     Eigen::MatrixXd rMCc;
-    Eigen::MatrixXd R;
+    Eigen::MatrixXd Rcm;
 };
 
 struct Feature {

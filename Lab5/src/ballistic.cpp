@@ -17,7 +17,6 @@ void BallisticProcessModel::operator()(const Eigen::VectorXd & x, const Eigen::V
     const double & L    = param.L;
     const double & T0   = param.T0;
     const double & g    = param.g;
-
     // TODO: mean function, x = [v;d-g;0]
     f = Eigen::MatrixXd::Zero(x.rows(),1);
     f.resize(x.rows(),1);
@@ -57,7 +56,6 @@ void BallisticProcessModel::operator()(const Eigen::VectorXd & x, const Eigen::V
     const double & L    = param.L;
     const double & T0   = param.T0;
     const double & g    = param.g;
-
     // TODO: mean function, x = [v;d-g;0]
     f = Eigen::MatrixXd::Zero(x.rows(),1);
     f.resize(x.rows(),1);
@@ -100,7 +98,6 @@ void BallisticMeasurementModel::operator()(const Eigen::VectorXd & x, const Eige
 {
     const double & r1   = param.r1;
     const double & r2   = param.r2;
-
     // TODO: mean function
     h = Eigen::MatrixXd::Zero(1,1);
     h.resize(1,1);
@@ -125,7 +122,6 @@ void BallisticMeasurementModel::operator()(const Eigen::VectorXd & x, const Eige
 {
     const double & r1   = param.r1;
     const double & r2   = param.r2;
-
     // TODO: mean function
     h = Eigen::MatrixXd::Zero(1,1);
     h.resize(1,1);

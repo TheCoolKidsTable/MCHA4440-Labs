@@ -263,4 +263,19 @@ build/main.o: src/main.cpp \
  C:/msys64/mingw64/include/vtk-8.2/vtkInteractorStyleTrackballCamera.h \
  C:/msys64/mingw64/include/vtk-8.2/vtkInteractionStyleModule.h \
  C:/msys64/mingw64/include/vtk-8.2/vtkInteractorStyle.h \
- C:/msys64/mingw64/include/vtk-8.2/vtkInteractorObserver.h
+ C:/msys64/mingw64/include/vtk-8.2/vtkInteractorObserver.h \
+ src/gaussian.hpp C:/msys64/mingw64/include/eigen3/Eigen/QR \
+ C:/msys64/mingw64/include/eigen3/Eigen/Core \
+ C:/msys64/mingw64/include/eigen3/Eigen/Cholesky \
+ C:/msys64/mingw64/include/eigen3/Eigen/Jacobi \
+ C:/msys64/mingw64/include/eigen3/Eigen/src/Jacobi/Jacobi.h \
+ C:/msys64/mingw64/include/eigen3/Eigen/src/Cholesky/LLT.h \
+ C:/msys64/mingw64/include/eigen3/Eigen/src/Cholesky/LDLT.h \
+ C:/msys64/mingw64/include/eigen3/Eigen/Householder \
+ C:/msys64/mingw64/include/eigen3/Eigen/src/Householder/Householder.h \
+ C:/msys64/mingw64/include/eigen3/Eigen/src/Householder/HouseholderSequence.h \
+ C:/msys64/mingw64/include/eigen3/Eigen/src/Householder/BlockHouseholder.h \
+ C:/msys64/mingw64/include/eigen3/Eigen/src/QR/HouseholderQR.h \
+ C:/msys64/mingw64/include/eigen3/Eigen/src/QR/FullPivHouseholderQR.h \
+ C:/msys64/mingw64/include/eigen3/Eigen/src/QR/ColPivHouseholderQR.h \
+ C:/msys64/mingw64/include/eigen3/Eigen/src/QR/CompleteOrthogonalDecomposition.h
