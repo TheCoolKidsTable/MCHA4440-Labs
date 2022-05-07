@@ -398,9 +398,12 @@ void runCompatibleDescriptorMatcher(const Settings & s, const CameraParameters &
                 std::placeholders::_4);     // C
 
     Eigen::VectorXd muY;
-    Eigen::MatrixXd SYY;    
+    Eigen::MatrixXd SYY;
+
+
     // TODO
     // 
+
     // ----------------------------------------------------------------
     // Check compatibility and generated isCompatible flag vector
     // ----------------------------------------------------------------
